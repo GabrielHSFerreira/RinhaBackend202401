@@ -31,7 +31,8 @@ namespace RinhaBackend202401.WebApi.Controllers
             if (cliente == null)
                 return NotFound("Cliente não encontrado.");
 
-            cliente.RealizarTransacao(novaTransacao);
+            if (!cliente.RealizarTransacao(novaTransacao))
+                return UnprocessableEntity("Transação excede limite do cliente.");
 
             await _context.SaveChangesAsync(cancellationToken);
 
