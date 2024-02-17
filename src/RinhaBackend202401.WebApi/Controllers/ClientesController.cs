@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RinhaBackend202401.WebApi.Controllers
 {
-    [Route("api/clientes")]
+    [Route("clientes")]
     [ApiController]
     public class ClientesController : ControllerBase
     {
