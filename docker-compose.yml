@@ -25,7 +25,7 @@ services:
     hostname: api1
     container_name: rinhabackendapi1
     environment:
-      ConnectionStrings__Database: Host=db;Database=rinhabackend;Username=rinhabackend;Password=rinhabackend
+      ConnectionStrings__Database: Host=db;Database=rinhabackend;Username=rinhabackend;Password=rinhabackend;Pooling=true;Minimum Pool Size=20;Maximum Pool Size=200;Max Auto Prepare=20;Auto Prepare Min Usages=1
     depends_on:
       postgresql:
         condition: service_healthy
