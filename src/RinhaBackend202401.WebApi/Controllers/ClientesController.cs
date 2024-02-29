@@ -46,7 +46,7 @@ namespace RinhaBackend202401.WebApi.Controllers
                 .AsNoTracking()
                 .Where(x => x.Id == id)
                 .Select(x => new SaldoDto(x.Saldo, DateTime.UtcNow, x.Limite))
-                .FirstAsync(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (saldo == null)
                 return NotFound("Cliente não encontrado.");
