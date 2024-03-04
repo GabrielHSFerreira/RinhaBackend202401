@@ -12,7 +12,7 @@ using RinhaBackend202401.WebApi.Contexts;
 namespace RinhaBackend202401.WebApi.Migrations
 {
     [DbContext(typeof(RinhaContext))]
-    [Migration("20240212205150_Initial")]
+    [Migration("20240301183953_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace RinhaBackend202401.WebApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -39,12 +39,6 @@ namespace RinhaBackend202401.WebApi.Migrations
                     b.Property<int>("Saldo")
                         .HasColumnType("integer");
 
-                    b.Property<uint>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
-
                     b.HasKey("Id");
 
                     b.ToTable("Clientes", (string)null);
@@ -54,36 +48,31 @@ namespace RinhaBackend202401.WebApi.Migrations
                         {
                             Id = 1,
                             Limite = 100000,
-                            Saldo = 0,
-                            Version = 0u
+                            Saldo = 0
                         },
                         new
                         {
                             Id = 2,
                             Limite = 80000,
-                            Saldo = 0,
-                            Version = 0u
+                            Saldo = 0
                         },
                         new
                         {
                             Id = 3,
                             Limite = 1000000,
-                            Saldo = 0,
-                            Version = 0u
+                            Saldo = 0
                         },
                         new
                         {
                             Id = 4,
                             Limite = 10000000,
-                            Saldo = 0,
-                            Version = 0u
+                            Saldo = 0
                         },
                         new
                         {
                             Id = 5,
                             Limite = 500000,
-                            Saldo = 0,
-                            Version = 0u
+                            Saldo = 0
                         });
                 });
 

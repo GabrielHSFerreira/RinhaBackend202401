@@ -19,9 +19,6 @@ namespace RinhaBackend202401.WebApi.Configurations
                 .IsRequired();
             builder.Property(x => x.Saldo)
                 .IsRequired();
-            builder.Property(x => x.Version)
-                .IsRowVersion()
-                .IsRequired();
 
             builder.HasData(
                 new Cliente(1, 100000, 0),

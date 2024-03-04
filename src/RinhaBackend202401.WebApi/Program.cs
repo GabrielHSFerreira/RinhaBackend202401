@@ -1,3 +1,5 @@
+using Medallion.Threading;
+using Medallion.Threading.Postgres;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,8 @@ namespace RinhaBackend202401.WebApi
 
             try
             {
+                var dbConnectionString = builder.Configuration.GetConnectionString("Database");
+
                 builder.Services.AddControllers()
                         .AddJsonOptions(options =>
                         {
@@ -29,7 +33,9 @@ namespace RinhaBackend202401.WebApi
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddDbContext<RinhaContext>(options =>
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+                    options.UseNpgsql(dbConnectionString));
+                builder.Services.AddSingleton<IDistributedLockProvider>(_ =>
+                    new PostgresDistributedSynchronizationProvider(dbConnectionString!));
                 builder.Host.UseSerilog();
 
                 var app = builder.Build();

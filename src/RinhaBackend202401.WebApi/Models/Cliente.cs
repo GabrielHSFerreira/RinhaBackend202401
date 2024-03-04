@@ -9,8 +9,6 @@ namespace RinhaBackend202401.WebApi.Models
         public int Limite { get; init; }
         public int Saldo { get; private set; }
 
-        public uint Version { get; private set; }
-
         public List<Transacao> Transacoes { get; init; } = new List<Transacao>();
 
         private Cliente() { }

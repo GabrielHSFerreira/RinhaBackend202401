@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Medallion.Threading;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RinhaBackend202401.WebApi.Contexts;
 using RinhaBackend202401.WebApi.Models;
 using System;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +16,12 @@ namespace RinhaBackend202401.WebApi.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly RinhaContext _context;
+        private readonly IDistributedLockProvider _lockProvider;
 
-        public ClientesController(RinhaContext context)
+        public ClientesController(RinhaContext context, IDistributedLockProvider lockProvider)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _lockProvider = lockProvider ?? throw new ArgumentNullException(nameof(lockProvider));
         }
 
         [HttpPost("{id:int}/transacoes")]
@@ -26,17 +30,20 @@ namespace RinhaBackend202401.WebApi.Controllers
             NovaTransacaoDto novaTransacao,
             CancellationToken cancellationToken)
         {
-            var cliente = await _context.Clientes.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            using (await _lockProvider.AcquireLockAsync($"UserTransaction{id}", cancellationToken: cancellationToken))
+            {
+                var cliente = await _context.Clientes.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-            if (cliente == null)
-                return NotFound("Cliente não encontrado.");
+                if (cliente == null)
+                    return NotFound("Cliente não encontrado.");
 
-            if (!cliente.RealizarTransacao(novaTransacao))
-                return UnprocessableEntity("Transação excede limite do cliente.");
+                if (!cliente.RealizarTransacao(novaTransacao))
+                    return UnprocessableEntity("Transação excede limite do cliente.");
 
-            await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(new ResultadoTransacaoDto(cliente.Limite, cliente.Saldo));
+                return Ok(new ResultadoTransacaoDto(cliente.Limite, cliente.Saldo));
+            }
         }
 
         [HttpGet("{id:int}/extrato")]

@@ -21,8 +21,7 @@ namespace RinhaBackend202401.WebApi.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Limite = table.Column<int>(type: "integer", nullable: false),
-                    Saldo = table.Column<int>(type: "integer", nullable: false),
-                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
+                    Saldo = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

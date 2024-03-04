@@ -9,6 +9,7 @@ services:
       POSTGRES_USER: rinhabackend
       POSTGRES_PASSWORD: rinhabackend
       POSTGRES_DB: rinhabackend
+    command: 'postgres -c max_connections=300 -c shared_buffers=96MB'
     volumes:
       - ./sql/ddl.sql:/docker-entrypoint-initdb.d/01-ddl.sql:ro
     networks:
@@ -19,18 +20,31 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: '240MB'
 
   api1: &api
     image: gabrielhsferreira/rinhabackend202401
+    pull_policy: build
+    build:
+      context: ./src/RinhaBackend202401.WebApi
     hostname: api1
     container_name: rinhabackendapi1
     environment:
-      ConnectionStrings__Database: Host=db;Database=rinhabackend;Username=rinhabackend;Password=rinhabackend;Pooling=true;Minimum Pool Size=20;Maximum Pool Size=200;Max Auto Prepare=20;Auto Prepare Min Usages=1
+      ConnectionStrings__Database: Host=db;Database=rinhabackend;Username=rinhabackend;Password=rinhabackend;Pooling=true;Minimum Pool Size=20;Maximum Pool Size=2000;Max Auto Prepare=20;Auto Prepare Min Usages=1
     depends_on:
       postgresql:
         condition: service_healthy
     networks:
       - rinhabackend-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: '150MB'
   
   api2:
     <<: *api
@@ -39,7 +53,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: rinhabackendloadbalancer
+    container_name: rinhabackendlb
     ports:
       - 9999:9999
     depends_on:
@@ -49,6 +63,11 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - rinhabackend-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '10MB'
 
 networks:
   rinhabackend-network:
