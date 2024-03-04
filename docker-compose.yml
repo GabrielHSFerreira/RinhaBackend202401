@@ -23,8 +23,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: '240MB'
+          cpus: '0.7'
+          memory: '150MB'
 
   api1: &api
     image: gabrielhsferreira/rinhabackend202401
@@ -43,8 +43,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.2'
-          memory: '150MB'
+          cpus: '0.3'
+          memory: '175MB'
   
   api2:
     <<: *api
@@ -66,8 +66,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.1'
-          memory: '10MB'
+          cpus: '0.2'
+          memory: '50MB'
 
 networks:
   rinhabackend-network:
